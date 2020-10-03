@@ -7,6 +7,8 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+
 public class ContactsDB {
     public static final String KEY_ROWID = "_id";
     public static final String KEY_NAME = "person_name";
@@ -103,7 +105,7 @@ public class ContactsDB {
         return ourDatabase.insert(DATABASE_TABLE, null, cv);
     }
 
-    public String getData() {
+    public ArrayList<ContactModel> getData() {
         String[] columns = new String[]{KEY_ROWID, KEY_NAME, KEY_CELL};
 
         Cursor c = ourDatabase.query(DATABASE_TABLE, columns, null, null, null, null, null);
@@ -114,13 +116,15 @@ public class ContactsDB {
         int iName = c.getColumnIndex(KEY_NAME);
         int iCell = c.getColumnIndex(KEY_CELL);
 
+        ArrayList<ContactModel> list = new ArrayList<>();
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             result = result + " " + c.getString(iRowID) + ".   " + c.getString(iName) + "  ->  " + c.getString(iCell) + "\n";
+            list.add(new ContactModel(c.getString(iName), c.getString(iCell)));
         }
 
         c.close();
 
-        return result;
+        return list;
 
     }
 
